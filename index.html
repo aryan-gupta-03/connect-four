@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect Four</title>
+    <style>
+        body{
+    background-color: rgb(0, 0, 0);
+}
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6, 0 0 25px #0073e6, 0 0 30px #0073e6, 0 0 35px #0073e6;
+  }
+  #board{
+    height:540px;
+    width:630px;
+    background-image:linear-gradient(to bottom right,rgb(87, 87, 255),white);
+    align-self: center;
+    margin:0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 10px;
+    box-shadow: 5px 5px 40px #0073e6
+  }
+.tile{
+    width:80px;
+    height:80px;
+
+    margin: 5px;
+    background-color: #00000032;
+    border-radius: 50%;
+  }
+  .pink{
+    background-color: #e600e6;
+  }
+  .violet{
+    background-color: #0b007e;
+  }
+  h2{
+    font-family: Arial, Helvetica, sans-serif;
+    
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e600e6, 0 0 20px #e600e6, 0 0 25px #e600e6, 0 0 30px #e600e6, 0 0 35px #e600e6;
+
+  }
+    </style>
+</head>
+<body>
+    <h1 id="heading">Connect 4</h1>
+    <h2 id="winner"></h2>
+    <div id="board">
+        
+    </div>
+    <script >
+        var pinkplayer="P";
+        var violetplayer="V";
+        var currnentplayer=pinkplayer;
+        var rows=6;
+        var cols=7;
+        var gameover=false;
+        var board;
+        var curcol;
+        
+        window.onload=function() {
+            setgame();
+        };
+        function setgame(){
+            board=[];
+            curcol=[5,5,5,5,5,5,5];
+            for(let i=0;i<rows;i++){
+                let r=[];
+                for(let j=0;j<cols;j++){
+                    r.push(' ');
+                    let tile=document.createElement("div");
+                    tile.id=i.toString()+"-"+j.toString();
+                    tile.classList.add("tile");
+                    tile.addEventListener("click",setPiece);
+                    document.getElementById("board").append(tile);
+        
+        
+        
+        
+                }
+                board.push(r);
+            }
+        }
+        
+        function setPiece(){
+            if(gameover){
+                return;
+            }
+            let cords=this.id.split("-");
+            let x=parseInt(cords[0]);
+            let y=parseInt(cords[1]);
+            x=curcol[y];
+            if(x<0)
+            {
+                return;
+            }
+            board[x][y]=currnentplayer;
+            let tile=document.getElementById(x.toString()+"-"+y.toString());
+            if(currnentplayer==pinkplayer)
+            {
+                tile.classList.add("pink");
+                currnentplayer=violetplayer;
+            }
+            else{
+                tile.classList.add("violet");
+                currnentplayer=pinkplayer;
+            }
+            x-=1;
+            curcol[y]=x;
+            checkWinner();
+        }
+        function checkWinner()
+        {
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows - 3; r++) {
+                    if (board[r][c] != ' ') {
+                        if (board[r][c] == board[r+1][c] && board[r+1][c] == board[r+2][c] && board[r+2][c] == board[r+3][c]) {
+                            setWinner(r, c);
+                            return;
+                        }
+                    }
+                }
+            }
+            for (let r = 0; r < rows ; r++) {
+                for (let c = 0; c < cols-3; c++) {
+                    if (board[r][c] != ' ') {
+                        if (board[r][c] == board[r][c+1] && board[r][c+1] == board[r][c+2] && board[r][c+2] == board[r][c+3]) {
+                            setWinner(r, c);
+                            return;
+                        }
+                    }
+                }
+            }
+            // anti diagonal
+            for (let r = 0; r < rows - 3; r++) {
+                for (let c = 0; c < cols - 3; c++) {
+                    if (board[r][c] != ' ') {
+                        if (board[r][c] == board[r+1][c+1] && board[r+1][c+1] == board[r+2][c+2] && board[r+2][c+2] == board[r+3][c+3]) {
+                            setWinner(r, c);
+                            return;
+                        }
+                    }
+                }
+            }
+        
+            // diagonal
+            for (let r = 3; r < rows; r++) {
+                for (let c = 0; c < cols - 3; c++) {
+                    if (board[r][c] != ' ') {
+                        if (board[r][c] == board[r-1][c+1] && board[r-1][c+1] == board[r-2][c+2] && board[r-2][c+2] == board[r-3][c+3]) {
+                            setWinner(r, c);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        function setWinner(r,c){
+            let winner=document.getElementById("winner");
+            if(board[r][c]==pinkplayer)
+            {
+                winner.innerText="Pink wins";
+            }
+            else{
+                winner.innerText="Blue wins";
+            }
+            gameover=true;
+            
+        }</script>
+</body>
+</html>
